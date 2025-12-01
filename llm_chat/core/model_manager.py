@@ -92,18 +92,24 @@ class ModelManager:
         # Fetch Ollama models
         try:
             ollama_models = await self.ollama.list_models_detailed()
-            self._models_cache["ollama"] = [
-                ModelInfo(
+            self._models_cache["ollama"] = []
+            for m in ollama_models:
+                modified = None
+                if m.get("modified"):
+                    try:
+                        modified = datetime.fromisoformat(m["modified"])
+                    except (ValueError, TypeError):
+                        pass
+                
+                self._models_cache["ollama"].append(ModelInfo(
                     name=m.get("name", ""),
                     provider="ollama",
                     size=m.get("size"),
-                    modified=datetime.fromisoformat(m["modified"]) if m.get("modified") else None,
+                    modified=modified,
                     family=m.get("details", {}).get("family"),
                     parameters=m.get("details", {}).get("parameter_size"),
                     quantization=m.get("details", {}).get("quantization_level"),
-                )
-                for m in ollama_models
-            ]
+                ))
         except Exception as e:
             logger.warning(f"Failed to fetch Ollama models: {e}")
             self._models_cache["ollama"] = []

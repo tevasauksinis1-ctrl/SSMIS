@@ -8,6 +8,11 @@ from pathlib import Path
 from llm_chat.services.mcp_connector import MCPConnector
 
 
+def run_async(coro):
+    """Helper to run async tests."""
+    return asyncio.run(coro)
+
+
 class TestMCPConnector:
     """Tests for MCPConnector class."""
     
@@ -53,7 +58,7 @@ class TestMCPConnector:
                 )
                 assert value is None
             
-            asyncio.get_event_loop().run_until_complete(test())
+            run_async(test())
     
     def test_list_memories_local(self):
         """Test listing memories from local storage."""
@@ -71,7 +76,7 @@ class TestMCPConnector:
                 
                 assert len(items) == 2
             
-            asyncio.get_event_loop().run_until_complete(test())
+            run_async(test())
     
     def test_search_memories_local(self):
         """Test searching memories in local storage."""
@@ -88,7 +93,7 @@ class TestMCPConnector:
                 
                 assert len(results) == 1
             
-            asyncio.get_event_loop().run_until_complete(test())
+            run_async(test())
     
     def test_conversation_context(self):
         """Test storing and retrieving conversation context."""
@@ -107,7 +112,7 @@ class TestMCPConnector:
                 assert retrieved["summary"] == "Test conversation"
                 assert "testing" in retrieved["topics"]
             
-            asyncio.get_event_loop().run_until_complete(test())
+            run_async(test())
     
     def test_clear_local_memory(self):
         """Test clearing local memory."""
@@ -125,4 +130,4 @@ class TestMCPConnector:
                 items = await connector.list_memories("ns")
                 assert len(items) == 0
             
-            asyncio.get_event_loop().run_until_complete(test())
+            run_async(test())

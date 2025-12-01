@@ -143,7 +143,7 @@ create_launcher() {
 #!/bin/bash
 # LLM Chat Launcher
 source "${VENV_PATH}/bin/activate"
-python -m llm_chat "\$@"
+"\${BASH_SOURCE%/*}/../venv/bin/python" -m llm_chat "\$@"
 EOF
     
     chmod +x "$LAUNCHER_PATH"
